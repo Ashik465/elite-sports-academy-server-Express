@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const jwt = require('jsonwebtoken');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ChangeStream } = require('mongodb');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
 
@@ -79,8 +79,9 @@ app.post('/jwt', (req, res) => {
 
     // insert class data
 
-    app.post("/classes", async (req, res) => {
+    app.post("/classes",verifyJWT , async (req, res) => {
         const classData = req.body;
+        console.log(classData);
         const result = await classesCollection.insertOne(classData);
         res.send(result);
         });
