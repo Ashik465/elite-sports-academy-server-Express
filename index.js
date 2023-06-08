@@ -30,6 +30,7 @@ async function run() {
 
 
     const usersCollection = client.db("eliteSports").collection("users");
+    const classesCollection = client.db("eliteSports").collection("classes");
 
 
    // user related api-------------
@@ -49,7 +50,15 @@ async function run() {
  
 
 
+// class retaled api----------------
 
+    // insert class data
+
+    app.post("/classes", async (req, res) => {
+        const classData = req.body;
+        const result = await classesCollection.insertOne(classData);
+        res.send(result);
+        });
 
 
 
