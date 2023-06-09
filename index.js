@@ -148,6 +148,14 @@ async function run() {
 
 
     
+ // get specific class data by status = Approve
+
+ app.get("/classes/approve",  async (req, res) => {
+      
+  const query = { status: "Approve" };
+  const result = await classesCollection.find(query).toArray();
+  res.send(result);
+});
 
 
 
