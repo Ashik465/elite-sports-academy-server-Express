@@ -55,6 +55,20 @@ async function run() {
     const usersCollection = client.db("eliteSports").collection("users");
     const classesCollection = client.db("eliteSports").collection("classes");
 
+  
+  
+    // create jwt token
+
+    app.post("/jwt", (req, res) => {
+        const user = req.body;
+        const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+          expiresIn: "1h",
+        });
+        res.send({ token });
+      });
+  
+  
+  
     // user related api-------------
 
     // insert user data
@@ -70,15 +84,35 @@ async function run() {
       res.send(result);
     });
 
-    // create jwt token
+   // get all user data  
 
-    app.post("/jwt", (req, res) => {
-      const user = req.body;
-      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "1h",
-      });
-      res.send({ token });
+   app.get("/users/all", verifyJWT, async (req, res) => {
+    const email = req.query.email;
+    const decodedEmail = req.decoded.email;
+    // console.log(email, 'deco', decodedEmail)
+    if (email !== decodedEmail) {
+      return res.status(403).send({ error: true, message: "Forbidden user" });
+    }
+    const result = await usersCollection.find({}).toArray();
+    res.send(result);
     });
+
+      // update user roll by id
+
+      app.patch("/users/:id",  async (req, res) => {
+        const id = req.params.id;
+        const updatedRoll = req.body;
+        const filter = { _id: new ObjectId(id) };
+        const updateDoc = {
+            $set: { role: updatedRoll.role}
+        };
+        const result = await usersCollection.updateOne(filter, updateDoc);
+
+        res.send(result);
+    });
+
+
+
 
     // class related api----------------
 
@@ -110,7 +144,7 @@ async function run() {
 
 
 
-    // get all classes  data by user email
+    // get specific classes  data by user email
 
     app.get("/classes", verifyJWT, async (req, res) => {
       const email = req.query.email;
