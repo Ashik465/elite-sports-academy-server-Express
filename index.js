@@ -91,6 +91,25 @@ async function run() {
       res.send(result);
     });
 
+ // get all classes data  
+
+    app.get("/classes/all", verifyJWT, async (req, res) => {
+        const email = req.query.email;
+        const decodedEmail = req.decoded.email;
+        // console.log(email, 'deco', decodedEmail)
+        if (email !== decodedEmail) {
+          return res.status(403).send({ error: true, message: "Forbidden user" });
+        }
+        const result = await classesCollection.find({}).toArray();
+        res.send(result);
+        });
+
+
+    
+
+
+
+
     // get all classes  data by user email
 
     app.get("/classes", verifyJWT, async (req, res) => {
@@ -113,6 +132,24 @@ async function run() {
       const result = await classesCollection.findOne(query);
       res.send(result);
     });
+
+    // update class status by id
+
+    app.patch("/classes/:id",  async (req, res) => {
+        const id = req.params.id;
+        const updatedClass = req.body;
+        const filter = { _id: new ObjectId(id) };
+        const updateDoc = {
+            $set: { status: updatedClass.status}
+        };
+        const result = await classesCollection.updateOne(filter, updateDoc);
+
+        res.send(result);
+    });
+
+
+
+
 
     // update class data by id
 
