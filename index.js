@@ -111,6 +111,14 @@ async function run() {
         res.send(result);
     });
 
+   // get specific user data by role instructor
+
+    app.get("/users/instructor",  async (req, res) => {
+      
+      const query = { role: "Instructor" };
+      const result = await usersCollection.find(query).toArray();
+      res.send(result);
+    });
 
 
 
