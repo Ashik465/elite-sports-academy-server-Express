@@ -75,16 +75,40 @@ app.post('/jwt', (req, res) => {
   })
 
 
-// class retaled api----------------
+// class related api----------------
 
     // insert class data
 
     app.post("/classes",verifyJWT , async (req, res) => {
         const classData = req.body;
-        console.log(classData);
+        // console.log(classData);
         const result = await classesCollection.insertOne(classData);
         res.send(result);
         });
+
+   // get all classes  data by user email
+
+    app.get("/classes",verifyJWT , async (req, res) => {
+        const email = req.query.email;
+        const decodedEmail = req.decoded.email
+        // console.log(email, 'deco', decodedEmail)
+        if (email !== decodedEmail) {
+          return res.status(403).send({ error: true, message: "Forbidden user" });
+        }
+        const query = { instructorEmail: email };
+        const result = await classesCollection.find(query).toArray();
+        res.send(result);
+      });
+
+
+
+
+
+
+
+
+
+
 
 
 
