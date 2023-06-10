@@ -122,6 +122,30 @@ async function run() {
 
 
 
+    // get user role  is Admin
+
+
+    app.get("/users/isAdmin", verifyJWT, async (req, res) => { 
+      const email = req.query.email;
+ 
+      if (req.decoded.email !== email) { 
+        res.send({ admin: false }); 
+      } 
+ 
+      const query = { email: email }; 
+      const user = await usersCollection.findOne(query); 
+      const result = { admin: user?.role === "Admin" }; 
+      res.send(result); 
+    })
+
+
+
+
+
+
+
+
+
     // class related api----------------
 
     // insert class data
