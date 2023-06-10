@@ -95,29 +95,29 @@ async function run() {
 
 
 
-app.post("/payment", verifyJWT, async (req, res) => {
-  const payment = req.body;
-  const insertResult = await enrollClassCollection.insertOne(payment);
+app.post("/paymentInfo", verifyJWT, async (req, res) => {
+  const paymentInfo = req.body;
+  const enrollInsertResult = await enrollClassCollection.insertOne(paymentInfo);
 
   const deleteQuery = {
-    _id: new ObjectId(payment._id),
+    _id: new ObjectId(paymentInfo._id),
   };
-  const deleteResult = await selectedClassesCollection.deleteOne(deleteQuery);
+  const deleteClassResult = await selectedClassesCollection.deleteOne(deleteQuery);
 
   const updateQuery = {
-    _id: new ObjectId(payment.classId
+    _id: new ObjectId(paymentInfo.classId
       ),
   };
-  const updateResult = await classesCollection.updateOne(updateQuery, {
+  const updateEnrolledStudentsResult = await classesCollection.updateOne(updateQuery, {
     $inc: { 
       enrolledStudents: 1 },
   });
 
-  const updateSeatsQuery = {
-    _id: new ObjectId(payment.classId),
+  const updateAvailableSeatsQuery = {
+    _id: new ObjectId(paymentInfo.classId),
   };
-  const updateSeatsResult = await classesCollection.updateOne(
-    updateSeatsQuery,
+  const updateAvailableSeatsResult = await classesCollection.updateOne(
+    updateAvailableSeatsQuery,
     {
       $inc: { 
         availableSeats: -1 },
@@ -127,10 +127,10 @@ app.post("/payment", verifyJWT, async (req, res) => {
   
 
   res.send({
-    insertResult,
-    deleteResult,
-    updateResult,
-    updateSeatsResult,
+    enrollInsertResult,
+    deleteClassResult,
+    updateEnrolledStudentsResult,
+   updateAvailableSeatsResult,
     
   });
 });
