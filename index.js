@@ -54,6 +54,7 @@ async function run() {
 
     const usersCollection = client.db("eliteSports").collection("users");
     const classesCollection = client.db("eliteSports").collection("classes");
+    const selectedClassesCollection = client.db("eliteSports").collection("selectedClass");
 
   
   
@@ -67,7 +68,20 @@ async function run() {
         res.send({ token });
       });
   
-  
+  // selected class related api------------
+
+
+   // insert class in the selected class
+
+   app.post("/selectedClass", async (req, res) => {
+    const item = req.body;
+    // console.log("adding new class: ", item);
+    const result = await selectedClassesCollection.insertOne(item);
+    res.send(result);
+  });
+
+
+
   
     // user related api-------------
 
