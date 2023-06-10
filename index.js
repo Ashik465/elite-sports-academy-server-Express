@@ -144,7 +144,7 @@ app.get("/users/isInstructor", verifyJWT, async (req, res) => {
   const email = req.query.email;
 
   if (req.decoded.email !== email) { 
-    res.send({ admin: false }); 
+    res.send({instructor: false }); 
   } 
 
   const query = { email: email }; 
@@ -153,9 +153,20 @@ app.get("/users/isInstructor", verifyJWT, async (req, res) => {
   res.send(result); 
 })
 
+// get user role  is Student / check is student
 
+app.get("/users/isStudent", verifyJWT, async (req, res) => { 
+  const email = req.query.email;
 
+  if (req.decoded.email !== email) { 
+    res.send({ student: false }); 
+  } 
 
+  const query = { email: email }; 
+  const user = await usersCollection.findOne(query); 
+  const result = { student: user?.role === "student" }; 
+  res.send(result); 
+})
 
 
     // class related api----------------
