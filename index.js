@@ -90,6 +90,28 @@ async function run() {
       })
     })
 
+
+// enroll class related api-----------------------------
+
+// get specific  enrolled class data by email
+
+app.get("/enrollClass/all", verifyJWT, async (req, res) => {
+  const email = req.query.email;
+  const decodedEmail = req.decoded.email;
+  // console.log(email, 'deco', decodedEmail)
+  if (email !== decodedEmail) {
+    return res.status(403).send({ error: true, message: "Forbidden user" });
+  }
+  const query = {  email: email };
+  const result = await enrollClassCollection.find(query).toArray();
+  res.send(result);
+  });
+
+
+
+
+
+
 //payment class related api-----------------------------
 
 
@@ -134,22 +156,6 @@ app.post("/paymentInfo", verifyJWT, async (req, res) => {
     
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
