@@ -95,6 +95,18 @@ async function run() {
     res.send(result);
     });
 
+ //delete selected class by id
+
+  app.delete("/selectedClass/delete/:id", async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const result = await selectedClassesCollection.deleteOne(query);
+    res.send(result);
+  });
+
+
+
+
 
   
     // user related api--------------------------
