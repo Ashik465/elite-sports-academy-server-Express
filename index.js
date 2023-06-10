@@ -108,6 +108,26 @@ app.get("/enrollClass/all", verifyJWT, async (req, res) => {
   });
 
 
+// get payment history by email 
+app.get("/enrollClass/paymentHistory", verifyJWT, async (req, res) => {
+  const email = req.query.email;
+  if (!email) {
+    return res.send([]);
+  }
+
+  if (req.decoded.email !== email) {
+    return res
+      .status(403)
+      .send({ error: true, message: "forbidden access" });
+  }
+
+  const query = { email: email };
+  const sort = { date: -1 };
+  const result = await enrollClassCollection.find(query).sort(sort).toArray();
+  res.send(result);
+});
+
+
 
 
 
