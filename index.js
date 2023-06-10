@@ -56,6 +56,7 @@ async function run() {
     const usersCollection = client.db("eliteSports").collection("users");
     const classesCollection = client.db("eliteSports").collection("classes");
     const selectedClassesCollection = client.db("eliteSports").collection("selectedClass");
+    const enrollClassCollection = client.db("eliteSports").collection("enrollClass");
 
   
   
@@ -88,6 +89,67 @@ async function run() {
    res.send({  clientSecret: paymentIntent.client_secret,
       })
     })
+
+//payment class related api-----------------------------
+
+
+
+
+app.post("/payment", verifyJWT, async (req, res) => {
+  const payment = req.body;
+  const insertResult = await enrollClassCollection.insertOne(payment);
+
+  const deleteQuery = {
+    _id: new ObjectId(payment._id),
+  };
+  const deleteResult = await selectedClassesCollection.deleteOne(deleteQuery);
+
+  const updateQuery = {
+    _id: new ObjectId(payment.classId
+      ),
+  };
+  const updateResult = await classesCollection.updateOne(updateQuery, {
+    $inc: { 
+      enrolledStudents: 1 },
+  });
+
+  const updateSeatsQuery = {
+    _id: new ObjectId(payment.classId),
+  };
+  const updateSeatsResult = await classesCollection.updateOne(
+    updateSeatsQuery,
+    {
+      $inc: { 
+        availableSeats: -1 },
+    }
+  );
+
+  
+
+  res.send({
+    insertResult,
+    deleteResult,
+    updateResult,
+    updateSeatsResult,
+    
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
