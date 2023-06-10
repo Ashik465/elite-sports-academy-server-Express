@@ -68,7 +68,7 @@ async function run() {
         res.send({ token });
       });
   
-  // selected class related api------------
+  // selected class related api-----------------------------
 
 
    // insert class in the selected class
@@ -81,9 +81,23 @@ async function run() {
   });
 
 
+  // get specific selected class data by email
+
+  app.get("/selectedClass/all", verifyJWT, async (req, res) => {
+    const email = req.query.email;
+    const decodedEmail = req.decoded.email;
+    // console.log(email, 'deco', decodedEmail)
+    if (email !== decodedEmail) {
+      return res.status(403).send({ error: true, message: "Forbidden user" });
+    }
+    const query = { studentEmail: email };
+    const result = await selectedClassesCollection.find(query).toArray();
+    res.send(result);
+    });
+
 
   
-    // user related api-------------
+    // user related api--------------------------
 
     // insert user data
 
