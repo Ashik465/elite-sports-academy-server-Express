@@ -344,6 +344,18 @@ app.get("/users/isStudent", verifyJWT, async (req, res) => {
         res.send(result);
         });
 
+  // get popular classes data
+
+  app.get("/classes/popularClasses", async (req, res) => {
+    const query = { status: "Approve" };
+    const options = { sort: { enrolledStudents: -1 } };
+    const result = await classesCollection
+      .find(query, options)
+      .limit(6)
+      .toArray();
+    res.send(result);
+  });
+
 
     
  // get specific class data by status = Approve
