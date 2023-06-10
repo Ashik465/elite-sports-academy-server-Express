@@ -10,6 +10,7 @@ const {
 } = require("mongodb");
 require("dotenv").config();
 const port = process.env.PORT || 5000;
+const stripe = require("stripe")(process.env.PAYMENT_SECRET_KEY);
 
 //middeleware
 app.use(cors());
@@ -68,6 +69,28 @@ async function run() {
         res.send({ token });
       });
   
+
+
+    // create payment intent
+    app.post('/create-payment-intent', verifyJWT, async (req, res) => {
+      const { price } = req.body
+     
+
+     const amount = parseFloat(price) * 100
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: 'usd',
+        payment_method_types: ['card'],
+      })
+    
+      
+    
+   res.send({  clientSecret: paymentIntent.client_secret,
+      })
+    })
+
+
+
   // selected class related api-----------------------------
 
 
