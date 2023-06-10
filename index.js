@@ -122,7 +122,7 @@ async function run() {
 
 
 
-    // get user role  is Admin
+    // get user role  is Admin / check is admin
 
 
     app.get("/users/isAdmin", verifyJWT, async (req, res) => { 
@@ -138,8 +138,20 @@ async function run() {
       res.send(result); 
     })
 
+// get user role  is Instructor / check is instructor
 
+app.get("/users/isInstructor", verifyJWT, async (req, res) => { 
+  const email = req.query.email;
 
+  if (req.decoded.email !== email) { 
+    res.send({ admin: false }); 
+  } 
+
+  const query = { email: email }; 
+  const user = await usersCollection.findOne(query); 
+  const result = { instructor: user?.role === "Instructor" }; 
+  res.send(result); 
+})
 
 
 
