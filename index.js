@@ -137,7 +137,7 @@ app.get("/enrollClass/paymentHistory", verifyJWT, async (req, res) => {
 
 
 
-app.post("/paymentInfo", verifyJWT, async (req, res) => {
+app.post("/paymentInfo",  async (req, res) => {
   const paymentInfo = req.body;
   const enrollInsertResult = await enrollClassCollection.insertOne(paymentInfo);
 
